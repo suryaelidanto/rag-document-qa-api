@@ -1,8 +1,8 @@
-# RAG Expert 🤖
+# RAG Document QA API
 
-A Retrieval-Augmented Generation (RAG) service that answers questions based on provided documents. Combines document chunking with OpenAI's GPT to deliver accurate, context-aware responses.
+Context-aware RAG API for document Q&A using GPT-4o with dynamic text chunking strategies.
 
-## 🛠️ Setup
+## Setup
 
 1. **Install Dependencies**
    ```bash
@@ -15,7 +15,7 @@ A Retrieval-Augmented Generation (RAG) service that answers questions based on p
    OPENAI_API_KEY=sk-your-key-here
    ```
 
-## 🚀 Running the Service
+## Running the Service
 
 ```bash
 uv run uvicorn main:app --reload
@@ -23,9 +23,10 @@ uv run uvicorn main:app --reload
 
 Server runs at: `http://localhost:8000`
 
-## 📡 API Endpoints
+## API Endpoints
 
-### `GET /` - Health Check
+### GET / - Health Check
+
 ```bash
 curl http://localhost:8000/
 ```
@@ -39,9 +40,7 @@ curl http://localhost:8000/
 }
 ```
 
----
-
-### `POST /rag-query` - Ask Questions About Documents
+### POST /rag-query - Ask Questions About Documents
 
 **Request:**
 ```bash
@@ -60,8 +59,6 @@ curl -X POST http://localhost:8000/rag-query \
   "chunks_used": 1
 }
 ```
-
----
 
 ### Example: Contract Analysis
 
@@ -83,8 +80,6 @@ curl -X POST http://localhost:8000/rag-query \
 }
 ```
 
----
-
 ### Example: Information Not Found
 
 **Request:**
@@ -105,16 +100,14 @@ curl -X POST http://localhost:8000/rag-query \
 }
 ```
 
----
-
-## 🧠 How It Works
+## How It Works
 
 1. **Chunking**: Long documents are split into 2000-character chunks
 2. **Context Building**: Chunks are combined into a single context
 3. **AI Query**: OpenAI GPT-4o-mini answers based on the context
 4. **Response**: Returns the answer with chunk count
 
-## 🎯 Use Cases
+## Use Cases
 
 - Legal document Q&A (contracts, agreements)
 - HR policy queries (employee handbooks, SOPs)
