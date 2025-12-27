@@ -4,77 +4,89 @@
 ![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-Professional Context-aware RAG API for document Q&A using GPT-4o-mini with dynamic text chunking strategies. Built for enterprise-grade document analysis and automated compliance.
+A production-grade, context-aware RAG (Retrieval-Augmented Generation) API. It uses dynamic text chunking and GPT-4o-mini to provide highly accurate, document-based answers. Designed with a focus on **Reliability**, **Modular Architecture**, and **Automated AI Evaluation**.
 
 ## Architecture
 
+This system follows a modular service-oriented architecture to separate concerns and ensure scalability.
+
 ```mermaid
 graph TD
-    A[Client Request] --> B[FastAPI API]
-    B --> C[Service Layer]
-    C --> D[Text Chunking Strategy]
-    D --> E[Context Aggregator]
+    A[User Question + Document] --> B[FastAPI Endpoint]
+    B --> C[RAG Service Layer]
+    C --> D[Dynamic Document Chunker]
+    D --> E[Context Constructor]
     E --> F[OpenAI GPT-4o-mini]
-    F --> G[Validated QA Response]
+    F --> G[Validated Pydantic Response]
     G --> B
-    B --> H[Interactive Swagger Docs]
+    B --> H[Client Response]
+    
+    subgraph "Quality Gate"
+        I[DeepEval Faithfulness Test] -.-> G
+    end
 ```
 
-## Features
-- **Dynamic Chunking:** Automatically splits long documents into manageable segments.
-- **Context-Aware:** Answers questions strictly based on provided document context.
-- **Production-Ready:** Includes Docker orchestration, Makefiles, and GitHub Actions CI.
-- **Interactive Documentation:** Ready-to-use Swagger UI for API testing.
+## Core Features
+- **Smart Chunking:** Efficiently splits long documents to fit LLM context windows while maintaining semantic integrity.
+- **Strict Compliance:** Instructed to answer ONLY based on provided context to eliminate hallucinations.
+- **Async Processing:** Built on `FastAPI` and `AsyncOpenAI` for high-concurrency performance.
+- **Enterprise Tooling:** Fully containerized with Docker and automated via Makefile.
+- **Automated AI Evals:** Integrated `DeepEval` suite to measure **Faithfulness** and **Answer Relevancy**.
 
 ## Prerequisites
-- [uv](https://astral.sh/uv)
-- `make`
-- Docker (optional)
+- [uv](https://astral.sh/uv) (Extremely fast Python package manager)
+- `make` (Workflow automation)
+- Docker & Docker Compose (Containerization)
 
 ## Usage
 
 ### Local Development
 ```bash
-make install # Setup environment
-make dev     # Install pre-commit hooks
-make test    # Run API & Eval tests
+make setup    # Install dependencies
+make dev      # Prepare environment (sync + pre-commit)
+make test     # Execute all tests (Integration + AI Evals)
+make lint     # Enforce code quality via Ruff
 ```
 
-### Docker Execution
+### Docker Orchestration
+Experience the full production environment in seconds:
 ```bash
-make up
+make up       # Build and start container
+make down     # Stop and clean up
 ```
 
-### Interactive API Documentation
-Once the server is running, explore and test the API directly at:
-- **Swagger UI:** `http://localhost:8000/docs`
+### Interactive Documentation
+Once the server is running, explore the API via Swagger UI:
+- **URL:** `http://localhost:8000/docs`
 
-## API Examples
+## API Reference
 
-### Ask Questions About Documents
-**Endpoint:** `POST /rag-query`
+### POST `/rag-query`
+Queries a specific document and returns a validated answer.
 
-**Request:**
-```bash
-curl -X POST http://localhost:8000/rag-query \
-  -H "Content-Type: application/json" \
-  -d '{
-    "document_text": "ExampleCorp specializes in AI automation. The CEO is John Doe.",
-    "question": "Who is the CEO of ExampleCorp?"
-  }'
-```
-
-**Response:**
+**Request Body:**
 ```json
 {
-  "answer": "The CEO of ExampleCorp is John Doe.",
-  "chunks_used": 1,
-  "processing_time_ms": 1240
+  "document_text": "The corporate policy allows for 20 days of annual leave...",
+  "question": "How many days of leave can I take?"
 }
 ```
 
-## Development
-To contribute and maintain code quality, ensure you run `make dev` to setup the pre-commit guards.
+**Response Example:**
+```json
+{
+  "answer": "You are entitled to 20 days of annual leave per year.",
+  "chunks_used": 1,
+  "processing_time_ms": 1150
+}
+```
+
+## AI Quality Evaluation
+We don't just write code; we ensure AI reliability. This project includes an automated evaluation suite:
+- **Faithfulness Metric:** Ensures the AI is "honest" and doesn't invent information outside the document.
+- **Answer Relevancy:** Measures how well the AI actually addresses the user's specific question.
+
+Run evals: `make test`
 
 ---
-**Standard:** Modular Architecture | DeepEval | Async FastAPI
+**Flagship Standard:** Modular Design | DeepEval | Async-First | Dockerized
