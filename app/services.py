@@ -52,8 +52,8 @@ async def process_rag_query(question: str, document_text: str):
     context = "\n\n".join(chunks)
 
     system_prompt = (
-        "You are a professional assistant."
-        "Answer questions based ONLY on the provided document context."
+        "You are a professional assistant. "
+        "Answer questions based ONLY on the provided document context. "
         "If the information is not present, state that you cannot find it."
     )
 
